@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Failure Prediction</title>
+    <style>
+        /* --- General Styling & Color Theory --- */
+        :root {
+            /* Define a palette based on color theory for consistency */
+            --primary-blue: #0A3D62; /* Deep Blue - Represents trust, stability, professionalism (main accent) */
+            --light-blue: #ADD8E6; /* Light Blue - Softer variation, good for borders/highlights */
+            --accent-green: #2ecc71; /* Emerald Green - Health, success, positive outcome */
+            --accent-red: #e74c3c; /* Alizarin Red - Warning, danger, negative outcome */
+            --background-light: #f4f7f6; /* Very light gray/off-white for clean background */
+            --background-gradient-start: #e0f2f7; /* Soft cool tone */
+            --background-gradient-end: #ffffff; /* Pure white */
+            --text-dark: #333333; /* Standard dark text for readability */
+            --text-medium: #555555; /* Slightly lighter text for labels */
+            --shadow-color: rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* Using a subtle, calming gradient as background */
+            background: linear-gradient(to right, var(--background-gradient-start), var(--background-gradient-end));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            color: var(--text-dark); /* Default text color */
+        }
+
+        .container {
+            background-color: #ffffff; /* Pure white for the main content area for clarity */
+            padding: 35px 50px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px var(--shadow-color); /* More pronounced, yet soft shadow */
+            width: 100%;
+            max-width: 700px; /* Optimal reading width */
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: var(--primary-blue); /* Heading in primary brand color */
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em; /* Slightly larger for impact */
+            font-weight: 700; /* Bolder */
+            letter-spacing: 0.5px;
+        }
+
+        /* --- Form Elements Styling --- */
+        .form-group {
+            margin-bottom: 20px; /* Increased margin for better spacing */
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        label {
+            flex: 1 1 40%;
+            margin-bottom: 8px; /* Slightly more space below labels on wrap */
+            color: var(--text-medium);
+            font-weight: 600; /* Slightly bolder labels */
+            font-size: 1.05em;
+            padding-right: 20px; /* Increased space between label and input */
+            box-sizing: border-box;
+        }
+
+        input[type="text"] {
+            flex: 1 1 55%;
+            padding: 14px; /* Larger padding for easier touch interaction */
+            border: 1px solid var(--light-blue); /* Light blue border for input fields */
+            border-radius: 8px; /* Slightly more rounded corners */
+            box-sizing: border-box;
+            font-size: 1.1em; /* Larger font size in inputs */
+            color: var(--text-dark);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary-blue); /* Primary blue on focus for clear indication */
+            box-shadow: 0 0 0 4px rgba(10, 61, 98, 0.2); /* Soft shadow on focus */
+            outline: none;
+        }
+
+        button {
+            background-color: var(--accent-green); /* Positive action in accent green */
+            color: white;
+            padding: 15px 30px; /* Generous padding for button */
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.3em; /* Larger button text */
+            width: 100%;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            margin-top: 35px; /* More space above button */
+            font-weight: bold;
+            letter-spacing: 0.8px;
+            box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3); /* Subtle shadow for depth */
+        }
+
+        button:hover {
+            background-color: #27ae60; /* Slightly darker green on hover */
+            transform: translateY(-3px); /* More noticeable lift effect */
+            box-shadow: 0 6px 15px rgba(46, 204, 113, 0.4);
+        }
+
+        /* --- Prediction Result Styling --- */
+        .prediction-result {
+            margin-top: 40px; /* Increased margin for clear separation */
+            padding: 25px; /* Larger padding */
+            border-radius: 10px; /* More rounded corners */
+            text-align: center;
+            font-size: 1.4em; /* Larger result text */
+            font-weight: bold;
+            box-shadow: 0 2px 10px var(--shadow-color);
+            display: none; /* Hidden by default, shown by JS */
+            line-height: 1.5; /* Better line spacing for readability */
+        }
+
+        /* Specific styles for low-risk (positive) prediction */
+        .prediction-result.low-risk {
+            background-color: #e6ffe6; /* Very light green */
+            border: 1px solid var(--accent-green); /* Green border */
+            color: #1a7a3e; /* Darker green text for contrast */
+        }
+
+        /* Specific styles for high-risk (warning) prediction */
+        .prediction-result.high-risk {
+            background-color: #ffe6e6; /* Very light red */
+            border: 1px solid var(--accent-red); /* Red border */
+            color: #b32a2a; /* Darker red text for contrast */
+        }
+
+        .prediction-result .probability {
+            font-size: 0.9em;
+            margin-top: 10px;
+            color: var(--text-medium); /* Subtler color for probability text */
+        }
+
+        /* --- Accessibility & Usability Enhancements --- */
+        label.required::after {
+            content: " *";
+            color: var(--accent-red); /* Red asterisk for required fields */
+            font-weight: normal;
+        }
+
+        /* --- Responsive Design (Media Queries) --- */
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 30px; /* Adjust padding for tablets */
+            }
+            h1 {
+                font-size: 2em; /* Slightly smaller heading on smaller screens */
+            }
+            label {
+                flex: 1 1 100%; /* Stack labels and inputs on smaller screens */
+                padding-right: 0;
+                margin-bottom: 5px; /* Reduce margin when stacked */
+            }
+            input[type="text"] {
+                flex: 1 1 100%; /* Inputs take full width */
+                padding: 12px; /* Slightly smaller padding */
+                font-size: 1em; /* Adjust font size */
+            }
+            button {
+                padding: 12px 20px; /* Adjust button padding */
+                font-size: 1.1em; /* Adjust button font size */
+            }
+            .prediction-result {
+                font-size: 1.2em; /* Adjust result font size */
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px; /* Reduce overall padding on very small screens */
+            }
+            .container {
+                padding: 20px 20px; /* Further reduce container padding */
+                border-radius: 8px; /* Slightly less rounded corners */
+            }
+            h1 {
+                font-size: 1.8em; /* Even smaller heading */
+                margin-bottom: 20px;
+            }
+            .form-group {
+                margin-bottom: 15px; /* Reduce form group margin */
+            }
+            .prediction-result {
+                padding: 15px;
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Heart Failure Prediction</h1>
+        <form id="predictionForm">
+            <div class="form-group">
+                <label for="age" class="required">Age:</label>
+                <input type="text" id="age" name="age" placeholder="e.g., 60" required>
+            </div>
+            <div class="form-group">
+                <label for="anaemia" class="required">Anaemia (0=No, 1=Yes):</label>
+                <input type="text" id="anaemia" name="anaemia" placeholder="e.g., 0" required>
+            </div>
+            <div class="form-group">
+                <label for="creatinine_phosphokinase" class="required">Creatinine Phosphokinase (CPK):</label>
+                <input type="text" id="creatinine_phosphokinase" name="creatinine_phosphokinase" placeholder="e.g., 582" required>
+            </div>
+            <div class="form-group">
+                <label for="diabetes" class="required">Diabetes (0=No, 1=Yes):</label>
+                <input type="text" id="diabetes" name="diabetes" placeholder="e.g., 1" required>
+            </div>
+            <div class="form-group">
+                <label for="ejection_fraction" class="required">Ejection Fraction (%):</label>
+                <input type="text" id="ejection_fraction" name="ejection_fraction" placeholder="e.g., 38" required>
+            </div>
+            <div class="form-group">
+                <label for="high_blood_pressure" class="required">High Blood Pressure (0=No, 1=Yes):</label>
+                <input type="text" id="high_blood_pressure" name="high_blood_pressure" placeholder="e.g., 0" required>
+            </div>
+            <div class="form-group">
+                <label for="platelets" class="required">Platelets (kiloplatelets/mL):</label>
+                <input type="text" id="platelets" name="platelets" placeholder="e.g., 263000" required>
+            </div>
+            <div class="form-group">
+                <label for="serum_creatinine" class="required">Serum Creatinine (mg/dL):</label>
+                <input type="text" id="serum_creatinine" name="serum_creatinine" placeholder="e.g., 1.1" required>
+            </div>
+            <div class="form-group">
+                <label for="serum_sodium" class="required">Serum Sodium (mEq/L):</label>
+                <input type="text" id="serum_sodium" name="serum_sodium" placeholder="e.g., 136" required>
+            </div>
+            <div class="form-group">
+                <label for="sex" class="required">Sex (0=Female, 1=Male):</label>
+                <input type="text" id="sex" name="sex" placeholder="e.g., 1" required>
+            </div>
+            <div class="form-group">
+                <label for="smoking" class="required">Smoking (0=No, 1=Yes):</label>
+                <input type="text" id="smoking" name="smoking" placeholder="e.g., 0" required>
+            </div>
+            <div class="form-group">
+                <label for="time" class="required">Time (days, follow-up period):</label>
+                <input type="text" id="time" name="time" placeholder="e.g., 6" required>
+            </div>
+            <button type="submit">Predict</button>
+        </form>
+
+        <div id="predictionResult" class="prediction-result">
+            </div>
+    </div>
+
+    <script>
+        const predictionForm = document.getElementById('predictionForm');
+        const predictionResultDiv = document.getElementById('predictionResult');
+
+        predictionForm.addEventListener('submit', async function(event) {
+            event.preventDefault(); // Stop default form submission
+
+            const formData = new FormData(predictionForm);
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    predictionResultDiv.innerHTML = `
+                        ${data.prediction}
+                        <div class="probability">Probability: ${(data.probability * 100).toFixed(2)}%</div>
+                    `;
+                    // Remove existing risk classes and add new one
+                    predictionResultDiv.classList.remove('high-risk', 'low-risk');
+                    if (data.prediction.includes('High risk')) {
+                        predictionResultDiv.classList.add('high-risk');
+                    } else {
+                        predictionResultDiv.classList.add('low-risk');
+                    }
+                    predictionResultDiv.style.display = 'block'; // Show the result div
+                } else {
+                    // Handle server-side errors, e.g., validation failures from Flask
+                    predictionResultDiv.innerHTML = `Error: ${data.error || 'Something went wrong.'}`;
+                    predictionResultDiv.className = 'prediction-result high-risk'; // Style error as high-risk visually
+                    predictionResultDiv.style.display = 'block';
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                predictionResultDiv.innerHTML = 'An unexpected error occurred. Please try again.';
+                predictionResultDiv.className = 'prediction-result high-risk';
+                predictionResultDiv.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
