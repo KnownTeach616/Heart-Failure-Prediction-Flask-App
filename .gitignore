@@ -3,7 +3,7 @@ venv/
 .venv/
 
 # Media folders
-images/
+# images/
 
 # Python bytecode and compilation artifacts
 __pycache__/
