@@ -63,15 +63,15 @@ To set up and run this project on your local machine:
 Here are a few screenshots demonstrating the application's interface and functionality:
 
 ### Initial Form View:
-![Initial Form View]({{ 'images/Screenshot_21-7-2025_153832_127.0.0.1.jpeg' | relative_url }})
+![Initial Form View](images/Screenshot_21-7-2025_153832_127.0.0.1.jpeg)
 
 
 ### High-Risk Prediction Example:
-![High-Risk Prediction]({{ 'images/Screenshot_21-7-2025_153935_127.0.0.1.jpeg' | relative_url }})
+![High-Risk Prediction](images/Screenshot_21-7-2025_153935_127.0.0.1.jpeg)
 
 
 ### Low-Risk Prediction Example:
-![Low-Risk Prediction]({{ 'images/Screenshot_21-7-2025_154110_127.0.0.1.jpeg' | relative_url }})
+![Low-Risk Prediction](images/Screenshot_21-7-2025_154110_127.0.0.1.jpeg)
 
 
 ---
