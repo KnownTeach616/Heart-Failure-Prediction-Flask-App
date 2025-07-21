@@ -2,6 +2,9 @@
 venv/
 .venv/
 
+# Media folders
+images/
+
 # Python bytecode and compilation artifacts
 __pycache__/
 *.pyc
