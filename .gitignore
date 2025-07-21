@@ -1,0 +1,40 @@
+# Virtual environment folders
+venv/
+.venv/
+
+# Python bytecode and compilation artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter Notebook specific files
+.ipynb_checkpoints/
+.ipynd_history
+notebooks.html
+
+# Log files
+*.log
+logs/
+
+# Environment variables and sensitive configuration
+.env
+.flaskenv
+instance/
+
+# IDE and editor specific files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+
+# Test artifacts
+.pytest_cache/
+.coverage
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
